@@ -2,13 +2,15 @@ package prog3_2025.tp1;
 
 import java.util.Iterator;
 
-public class MySimpleLinkedList<T> implements Iterable<T>{
+public class MySimpleLinkedList<T extends Comparable<T>> implements Iterable<T>{
 
     private Node<T> first;
+    private Node<T> last;
     private int size;
 
     public MySimpleLinkedList() {
         this.first = null;
+        this.last = null;
         this.size = 0;
     }
 
@@ -22,8 +24,13 @@ public class MySimpleLinkedList<T> implements Iterable<T>{
     //Inserta al principio
     public void insertFront(T info) {
         Node<T> tmp = new Node<T>(info,null);
-        tmp.setNext(this.first);
-        this.first = tmp;
+        if (this.isEmpty()){
+            this.first = tmp;
+            this.last= tmp;
+        } else {
+            tmp.setNext(this.first);
+            this.first = tmp;
+        }
         this.size++;
     }
 
@@ -94,7 +101,7 @@ public class MySimpleLinkedList<T> implements Iterable<T>{
         return lista;
     }
 
-    /** Ejercicio 4
+    /* Ejercicio 4
      * A partir de la clase Lista implementada en el ejercicio 1, implemente el patrón
      * iterator-iterable, para que la lista sea iterable.
      */
@@ -110,4 +117,71 @@ public class MySimpleLinkedList<T> implements Iterable<T>{
     public Iterator<T> iterator() { //Hay que definir el iterador a devolver
         return new MyIterator<>(this.first);
     }
+
+    /*
+     * Ejercicio 5
+     * Escriba un procedimiento que dadas dos listas construya otra con los elementos comunes
+     *
+     * a) Las listas están desordenadas y la lista resultante debe quedar ordenada.
+     */
+
+    public MySimpleLinkedList<T> unionListaDesordenada(MySimpleLinkedList<T> listaDesordenada){
+        MySimpleLinkedList<T> listaResultante = new MySimpleLinkedList<>();
+        for (T i: this){
+            for (T x: listaDesordenada){
+                if (i.equals(x)){
+                    listaResultante.insertarOrdenado(i);
+                }
+            }
+        }
+        return listaResultante;
+    }
+
+//    public void insertarOrdenado(T info) {
+//        if (this.isEmpty()) {
+//            this.first = new Node<>(info, null);
+//            this.last = this.first;
+//        } else {
+//            for (T i : this) {
+//                if (i.compareTo(info)<0) { // i es menor
+//
+//                }
+//                else if (i.compareTo(info)>0) { // i es mayor
+//
+//                }
+//                else { // son iguales
+//
+//                }
+//            }
+//            this.size++;
+//        }
+//    }
+        /**
+         * b)
+         * Las listas están ordenadas y la lista resultante debe mantenerse ordenada.
+         */
+        public MySimpleLinkedList<T> unionListaOrdenada (MySimpleLinkedList < T > listaOrdenada) {
+            MySimpleLinkedList<T> listaResultante = new MySimpleLinkedList<>();
+            for (T i : this) {
+                for (T x : listaOrdenada) {
+                    if (i.equals(x)) {
+                        listaResultante.insertLast(i);
+                    }
+                }
+            }
+            return listaResultante;
+        }
+
+        //Inserta al final
+        public void insertLast (T info) {
+            if (this.isEmpty()) {
+                this.first = new Node<>(info, null);
+                this.last = this.first;
+            } else {
+                Node<T> tmp = new Node<T>(info, null);
+                this.last.setNext(tmp);
+                this.last = tmp;
+            }
+            this.size++;
+        }
 }
